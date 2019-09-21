@@ -1,3 +1,4 @@
+const usersCollection = require('../db').collection('users');
 const validator = require('validator');
 
 let User = function(data){
@@ -5,9 +6,21 @@ let User = function(data){
     this.errors = [];
 }
 
+User.prototype.cleanUp = function(){
+    if(typeof(this.data.username) != 'string'){this.data.username = ""}
+    if(typeof(this.data.email) != 'string'){this.data.email = ""}
+    if(typeof(this.data.password) != 'string'){this.data.password = ""}
+
+    this.data = {
+        username: this.data.username.trim().toLowerCase(),
+        email: this.data.email.trim().toLowerCase(),
+        password: this.data.password
+    }
+}
+
 User.prototype.validate = function(){
     if(this.data.username == ""){this.errors.push('You must provide a username')}
-    if(this.data.username !== "" && validator.isAlphanumeric(this.data.username)){this.errors.push('Username can only contain letters and numbers')}
+    if(this.data.username !== "" && !validator.isAlphanumeric(this.data.username)){this.errors.push('Username can only contain letters and numbers')}
     if(!validator.isEmail(this.data.email)){this.errors.push('You must provide a valid email address')}
     if(this.data.password == ""){this.errors.push('You must provide a password')}
     if(this.data.password.length > 0 && this.data.password.length < 12){this.errors.push('Password must be at least 12 characters')}
@@ -17,8 +30,27 @@ User.prototype.validate = function(){
 
 }
 
+User.prototype.login = function(){
+    this.cleanUp();
+    return new Promise((resolve, reject)=>{
+        usersCollection.findOne({username: this.data.username}).then((attemptedUser)=>{
+            if(attemptedUser && attemptedUser.password == this.data.password){
+                resolve('Congrats,');
+            }else{
+                reject('Invalid Password');
+            }
+        }).catch(()=>{
+            reject('Please try it again');
+        });
+    });
+}
+
 User.prototype.register = function(){
+    this.cleanUp();
     this.validate();
+    if(!this.errors.length){
+        usersCollection.insertOne(this.data);
+    }
 }
 
 module.exports = User;
