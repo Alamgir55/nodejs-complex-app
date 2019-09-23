@@ -20,6 +20,7 @@
   "homepage": "https://github.com/Alamgir55/nodejs-complex-app#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "connect-flash": "^0.1.1",
     "connect-mongo": "^3.0.0",
     "dotenv": "^8.1.0",
     "ejs": "^2.7.1",
