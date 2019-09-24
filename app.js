@@ -25,6 +25,10 @@ app.use(express.static('public'));
 app.set('views', 'views');
 app.set('view engine', 'ejs');
 
+app.use(function(req, res, next){
+    res.locals.user = req.session.user;
+    next();
+});
 
 app.use('/', router);
 
