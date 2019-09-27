@@ -15,6 +15,6 @@ exports.viewSingle = async function(req, res){
         let post = await Post.findSingleById(req.params.id);
         res.render('post-single-screen', {post: post});
     }catch{
-        res.send('This is 404 template');
+        res.render('404');
     }
 }
