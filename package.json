@@ -2,22 +2,11 @@
   "name": "complex-app",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "watch": "nodemon db",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Alamgir55/nodejs-complex-app.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Alamgir55/nodejs-complex-app/issues"
-  },
-  "homepage": "https://github.com/Alamgir55/nodejs-complex-app#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "connect-flash": "^0.1.1",
@@ -30,5 +19,17 @@
     "mongodb": "^3.3.2",
     "nodemon": "^1.19.2",
     "validator": "^11.1.0"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Alamgir55/nodejs-complex-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Alamgir55/nodejs-complex-app/issues"
+  },
+  "homepage": "https://github.com/Alamgir55/nodejs-complex-app#readme"
 }

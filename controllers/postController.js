@@ -1,20 +1,23 @@
-let Post = require('../models/Post');
+const Post = require('../models/Post');
+
 exports.viewCreateScreen = function(req, res){
     res.render('create-post');
 }
+
 exports.create = function(req, res){
-    let post = new Post(req.body, req.session._id);
+    let post = new Post(req.body, req.session.user._id);
     post.create().then(function(){
-        res.send('Post has been Created');
-    }).catch(function(error){
-        res.send(error);
-    }); 
+        res.send("New Post created.")
+    }).catch(function(errors){
+        res.send(errors);
+    });
 }
+
 exports.viewSingle = async function(req, res){
     try{
         let post = await Post.findSingleById(req.params.id);
-        res.render('post-single-screen', {post: post});
+        res.render('single-post-screen', {post: post});
     }catch{
-        res.render('404');
+        res.send("404 template will go here..");
     }
 }

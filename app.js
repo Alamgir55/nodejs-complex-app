@@ -5,7 +5,7 @@ const flash = require('connect-flash');
 const app = express();
 
 let sessionOptions = session({
-    secret: 'Javascript is so cool',
+    secret: "JavaScript is so cool",
     store: new MongoStore({client: require('./db')}),
     resave: false,
     saveUninitialized: false,
@@ -15,8 +15,12 @@ let sessionOptions = session({
 app.use(sessionOptions);
 app.use(flash());
 
-let router = require('./router');
-//console.log(router);
+app.use(function(req, res, next){
+    res.locals.user = req.session.user
+    next();
+});
+
+const router = require('./router');
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
@@ -24,11 +28,6 @@ app.use(express.json());
 app.use(express.static('public'));
 app.set('views', 'views');
 app.set('view engine', 'ejs');
-
-app.use(function(req, res, next){
-    res.locals.user = req.session.user;
-    next();
-});
 
 app.use('/', router);
 
