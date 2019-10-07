@@ -2,10 +2,11 @@ const postsCollection = require('../db').db().collection('posts');
 const ObjectID = require('mongodb').ObjectID;
 const User = require('./User');
 
-let Post = function(data, userid){
+let Post = function(data, userid, resquestedPostId){
     this.data = data;
     this.errors = [];
     this.userid = userid;
+    this.resquestedPostId = resquestedPostId;
 }
 
 Post.prototype.cleanUp = function(){
@@ -39,6 +40,35 @@ Post.prototype.create = function(){
         }else{
             reject(this.errors);
         }
+    });
+}
+
+Post.prototype.update = function(){
+    return new Promise(async (resolve, reject)=>{
+        try{
+            let post = await Post.findSingleById(this.resquestedPostId, this.userid);
+            if(post.isVisitorOwner){
+                let status = await this.actuallyUpdate();
+                   resolve(status);
+               }else{
+                   reject();
+               }             
+        }catch{
+            reject();
+        }
+    });
+}
+
+Post.prototype.actuallyUpdate = function(){
+    return new Promise(async (resolve, reject)=> {
+        this.cleanUp();
+        this.validate();
+       if(!this.errors.length){
+           await postsCollection.findOneAndUpdate({_id: new ObjectID(this.resquestedPostId)}, {$set: {title: this.data.title, body: this.data.body}});
+           resolve('success');
+       }else{
+           reject('failur');
+       }        
     });
 }
 
@@ -83,7 +113,7 @@ Post.findSingleById = function(id, visitorId){
         ], visitorId);
 
         if(posts.length){
-            console.log(posts[0])
+            //console.log(posts[0])
             resolve(posts[0]);
         }else{
             reject();
