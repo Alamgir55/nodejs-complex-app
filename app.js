@@ -2,7 +2,10 @@ const express = require('express');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 const flash = require('connect-flash');
+const marked = require('marked');
 const app = express();
+const sanitizeHTML = require('sanitize-html');
+
 
 let sessionOptions = session({
     secret: "JavaScript is so cool",
@@ -16,6 +19,10 @@ app.use(sessionOptions);
 app.use(flash());
 
 app.use(function(req, res, next){
+    res.locals.filterHTML = function(content){
+        return sanitizeHTML(marked(content), {allowedTags: ['p', 'br', 'ul', 'ol', 'li', 'strong', 'bold', 'i', 'em', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6'], allowedAttributes: {}});
+    }
+
     res.locals.errors = req.flash('errors');
     res.locals.success = req.flash('success');
 
