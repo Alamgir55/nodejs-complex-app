@@ -11,7 +11,7 @@ router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 
 // Profile
-router.get('/profile/:username', userController.ifUserExits, userController.profilePostScreen);
+router.get('/profile/:username', userController.ifUserExits, userController.sharedProfileData, userController.profilePostScreen);
 
 // Post
 router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);

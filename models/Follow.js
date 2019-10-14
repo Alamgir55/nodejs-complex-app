@@ -26,14 +26,23 @@ Follow.prototype.validate = async function(){
 Follow.prototype.create = function(){
     return new Promise(async (resolve, reject)=>{
         this.cleanUp();
-        this.validate();
+        await this.validate();
         if(!this.errors.length){
-            await followsCollection.insertOne({followedId: new ObjectID(this.followedId), authorId: new ObjectID(this.authorId)});
+            await followsCollection.insertOne({followedId: this.followedId, authorId: new ObjectID(this.authorId)});
             resolve();
         }else{
             reject(this.errors);
         }
     });
+}
+Follow.isVisitorFollowing = async function(followedId, VisiterId){
+    let followDoc =  await followsCollection.findOne({followedId: followedId, authorId: new ObjectID(VisiterId)});
+    
+    if(followDoc){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 module.exports = Follow;
