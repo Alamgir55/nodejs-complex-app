@@ -3,10 +3,13 @@ const Post = require('../models/Post');
 const Follow = require('../models/Follow');
 
 exports.sharedProfileData = async function(req, res, next){
+    let isVisiterProfile = false;
     let isFollowing = false;
     if(req.session.user){
-      isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId);
+        isVisiterProfile = req.profileUser._id.equals(req.session.user._id);
+        isFollowing = await Follow.isVisitorFollowing(req.profileUser._id, req.visitorId);
     }
+    req.isVisiterProfile = isVisiterProfile;
     req.isFollowing = isFollowing;
     next();
 }
@@ -85,10 +88,25 @@ exports.profilePostScreen = function(req, res){
             posts: posts,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
-            isFollowing: req.isFollowing
+            isFollowing: req.isFollowing,
+            isVisiterProfile: req.isVisiterProfile
         });
     }).catch(function(){
         res.render('404');
     });
+}
 
+exports.profilefollowersScreen = async function(req, res){
+   try{
+        let followers = await Follow.getFollowersById(req.profileUser._id);
+        res.render('profile-followers', {
+        followers: followers,
+        profileUsername: req.profileUser.username,
+        profileAvatar: req.profileUser.avatar,
+        isFollowing: req.isFollowing,
+        isVisiterProfile: req.isVisiterProfile
+    });
+   }catch{
+        res.render('404');
+   }
 }

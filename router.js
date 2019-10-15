@@ -12,6 +12,7 @@ router.post('/logout', userController.logout);
 
 // Profile
 router.get('/profile/:username', userController.ifUserExits, userController.sharedProfileData, userController.profilePostScreen);
+router.get('/profile/:username/followers', userController.ifUserExits, userController.sharedProfileData, userController.profilefollowersScreen);
 
 // Post
 router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);
@@ -24,5 +25,6 @@ router.post('/search', postController.search);
 
 // Follow
 router.post('/addfollow/:username', userController.mustBeLoggedIn, followController.addFollow);
+router.post('/removefollow/:username', userController.mustBeLoggedIn, followController.removeFollow);
 
 module.exports = router;
