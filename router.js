@@ -13,6 +13,7 @@ router.post('/logout', userController.logout);
 // Profile
 router.get('/profile/:username', userController.ifUserExits, userController.sharedProfileData, userController.profilePostScreen);
 router.get('/profile/:username/followers', userController.ifUserExits, userController.sharedProfileData, userController.profilefollowersScreen);
+router.get('/profile/:username/following', userController.ifUserExits, userController.sharedProfileData, userController.profilefollowingScreen);
 
 // Post
 router.get('/create-post', userController.mustBeLoggedIn, postController.viewCreateScreen);

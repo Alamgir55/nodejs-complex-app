@@ -11,6 +11,18 @@ exports.sharedProfileData = async function(req, res, next){
     }
     req.isVisiterProfile = isVisiterProfile;
     req.isFollowing = isFollowing;
+
+    let postCountPromise = Post.countPostsByAuthor(req.profileUser._id);
+    let countFollowersById = Follow.countFollowersById(req.profileUser._id);
+    let countFollowingById = Follow.countFollowingById(req.profileUser._id);
+
+    let [postCount, followerCount, followingCount] = await Promise.all([postCountPromise, countFollowersById, countFollowingById]);
+
+    
+    req.postCount = postCount;
+    req.followerCount = followerCount;
+    req.followingCount = followingCount;
+
     next();
 }
 
@@ -64,9 +76,10 @@ exports.register = function(req, res){
     
 }
 
-exports.home = function(req, res){
+exports.home = async function(req, res){
     if(req.session.user){
-        res.render('home-dashboard');
+        let posts = await Post.getFeed(req.session.user._id);
+        res.render('home-dashboard', {posts: posts});
     }else{
         res.render('home-guest', {regErrors: req.flash('regErrors')});
     }
@@ -85,11 +98,13 @@ exports.profilePostScreen = function(req, res){
 
     Post.findAuthorId(req.profileUser._id).then(function(posts){
         res.render('profile', {
+            currentPage: 'posts',
             posts: posts,
             profileUsername: req.profileUser.username,
             profileAvatar: req.profileUser.avatar,
             isFollowing: req.isFollowing,
-            isVisiterProfile: req.isVisiterProfile
+            isVisiterProfile: req.isVisiterProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
         });
     }).catch(function(){
         res.render('404');
@@ -98,15 +113,35 @@ exports.profilePostScreen = function(req, res){
 
 exports.profilefollowersScreen = async function(req, res){
    try{
+      // console.log(req.profileUser._id);
         let followers = await Follow.getFollowersById(req.profileUser._id);
         res.render('profile-followers', {
-        followers: followers,
-        profileUsername: req.profileUser.username,
-        profileAvatar: req.profileUser.avatar,
-        isFollowing: req.isFollowing,
-        isVisiterProfile: req.isVisiterProfile
+            currentPage: 'followers',
+            followers: followers,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisiterProfile: req.isVisiterProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
     });
    }catch{
         res.render('404');
    }
+}
+
+exports.profilefollowingScreen = async function(req, res){
+    try{
+        let following = await Follow.getFollowingById(req.profileUser._id);
+        res.render('profile-following', {
+            currentPage: 'following',
+            following: following,
+            profileUsername: req.profileUser.username,
+            profileAvatar: req.profileUser.avatar,
+            isFollowing: req.isFollowing,
+            isVisiterProfile: req.isVisiterProfile,
+            counts: {postCount: req.postCount, followerCount: req.followerCount, followingCount: req.followingCount}
+        });
+    }catch{
+        res.render('404');
+    }
 }
