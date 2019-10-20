@@ -2,6 +2,20 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const Follow = require('../models/Follow');
 
+
+exports.doesEmailExit = async function(req, res){
+   let emailBool = await User.doesEmailExit(req.body.email);
+   res.json(emailBool);   
+}
+
+exports.doesUsernameExit = function(req, res){
+    User.findByUsername(req.body.username).then(function(){
+        res.json(true);
+    }).catch(function(){
+        res.json(false);
+    })
+}
+
 exports.sharedProfileData = async function(req, res, next){
     let isVisiterProfile = false;
     let isFollowing = false;
