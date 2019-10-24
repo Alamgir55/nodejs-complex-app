@@ -4,6 +4,16 @@ const Follow = require('../models/Follow');
 const jwt = require('jsonwebtoken');
 
 
+exports.apiGetPostsByUsername = async function(req, res){
+    try{
+      let userDoc = await User.findByUsername(req.params.username);
+      let posts = await Post.findAuthorId(userDoc._id);
+      res.json(posts);
+    }catch{
+        res.json('You are not allowed.');
+    }
+}
+
 exports.apiMustBeLoggedIn = function(req, res, next){
     try{
         req.apiUser = jwt.verify(req.body.token, process.env.JWTSECRET);
