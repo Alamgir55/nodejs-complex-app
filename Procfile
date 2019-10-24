@@ -1,1 +1,1 @@
-web: blablabla blablabla node db.js
+web: node db.js
