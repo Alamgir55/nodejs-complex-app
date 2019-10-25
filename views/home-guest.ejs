@@ -1,8 +1,9 @@
-<%- include('includes/header'); %>
+<%- include('includes/header') %>
 
 <div class="container py-md-5">
-    <%- include('includes/flash'); %>
-    
+
+  <%- include('includes/flash') %>
+
   <div class="row align-items-center">
     <div class="col-lg-7 py-3 py-md-5">
       <h1 class="display-3">Remember Writing?</h1>      
@@ -10,9 +11,10 @@
     </div>
     <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
       <form action="/register" method="POST" id="registration-form">
-          <% regErrors.forEach(function(message){ %>
-            <div class="alert alert-danger small"><%= message %></div>
-          <% }) %>
+
+        <% regErrors.forEach(function(message) { %>
+          <div class="alert alert-danger small"><%= message %></div>
+        <% }) %>
 
           <div class="form-group">
             <label for="username-register" class="text-muted mb-1"><small>Username</small></label>
@@ -30,7 +32,6 @@
           </div>
           
           <input type="hidden" name="_csrf" value="<%= csrfToken %>">
-
           <button type="submit" class="py-3 mt-4 btn btn-lg btn-success btn-block">Sign up for OurApp</button>
           
         </form>
@@ -38,4 +39,4 @@
     </div>
   </div>
   
-  <%- include('includes/footer'); %>
+<%- include('includes/footer') %>
